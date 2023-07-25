@@ -1,26 +1,18 @@
 pipeline {
-    agent any
-
-    environment {
-        // Define any additional environment variables needed for the pipeline
-        NODE_VERSION = '16.x'
-        NPM_REGISTRY = 'https://registry.npmjs.org/'
+    agent {
+        docker {
+            image 'node:6-alpine'
+            args '-p 3000:3000'
+        }
     }
-
+     environment {
+            CI = 'true'
+        }
     stages {
-        stage('Install Dependencies') {
+        stage('Build') {
             steps {
-                // Use Node.js and npm from the Global Tool Configuration
-                tools {
-                    nodejs "${env.NODE_VERSION}"
-                }
-                // Install Node.js dependencies using npm
-                sh "npm install --registry=${env.NPM_REGISTRY}"
+                sh 'npm install'
             }
         }
-
-        // Other stages of your pipeline...
     }
-
-    // Post-build actions and notifications...
 }
